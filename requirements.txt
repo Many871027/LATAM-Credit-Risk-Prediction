@@ -9,3 +9,5 @@ pydantic
 websockets
 duckdb
 prefect
+joblib
+skops

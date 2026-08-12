@@ -27,7 +27,7 @@
         "Serializar el modelo entrenado y registrar la firma en formato skops o joblib para su uso en producción."
       ],
       "sdd": true,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "CR-003",
