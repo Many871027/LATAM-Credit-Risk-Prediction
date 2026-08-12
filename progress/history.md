@@ -36,3 +36,14 @@
 - Implemented Task 10: Created unified pipeline execution entrypoint in src/models/run_training.py.
 - Documented requirement-to-test traceability in progress/impl_xgboost_model_training_pipeline.md.
 
+## [2026-08-12] - CR-003 - fastapi_inference_service (FastAPI Inference Service)
+- Implemented Task 1: Setup dependencies and created empty Python files under `src/api/` package.
+- Implemented Task 2: Built `InferenceRequest` and `InferenceResponse` Pydantic models with validation constraints and model configuration for Pydantic V2.
+- Implemented Task 3: Developed risk decision piecewise engine calculating dynamic credit limits and decision tiers.
+- Implemented Task 4: Designed secure skops serialization lifespan load mechanism in FastAPI startup.
+- Implemented Task 5: Coded `/health` and async `/predict` endpoints with latency SLAs, rolling 1-minute window telemetry, and robust try-except fallback procedures.
+- Implemented Task 6: Authored automated test suite using `TestClient` in `tests/test_api.py`.
+- Implemented Task 7: Created the unified local verification runner script `src/api/run_service_verification.py`.
+- Documented requirement-to-test traceability in `progress/impl_fastapi_inference_service.md`.
+
+

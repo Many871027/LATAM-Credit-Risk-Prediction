@@ -41,7 +41,7 @@
         "Implementar valores de contingencia por defecto si fallan los datos de entrada o el modelo."
       ],
       "sdd": true,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "CR-004",
