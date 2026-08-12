@@ -1,0 +1,65 @@
+{
+  "project": "Credit Risk - MERCADO PAGO",
+  "description": "Senior ML/AI Engineer, focused on credit risk modeling and analysis.",
+  "features": [
+    {
+      "id": "CR-001",
+      "name": "business_modeling_and_target_construction",
+      "title": "Modelado de Negocio, Features y Definición de Target",
+      "description": "Definir y modelar la problemática de negocio de riesgo crediticio procesando datos transaccionales para generar variables de comportamiento e instrumentar el target del modelo (DPD30).",
+      "acceptance": [
+        "Desarrollar scripts en Python y queries SQL en BigQuery para procesar variables históricas (ej. volumen mensual, regularidad de sesión).",
+        "Construir la variable objetivo (target_default_30d) que identifique usuarios con impagos superiores a 30 días en una ventana de 12 meses.",
+        "Implementar una lógica de auditoría de datos en SQL para identificar y resolver duplicados de llaves primarias, inconsistencias de tipo de datos y nulos."
+      ],
+      "sdd": true,
+      "status": "spec_ready"
+    },
+    {
+      "id": "CR-002",
+      "name": "ml_scoring_model_development",
+      "title": "Desarrollo del Modelo de Scoring de Machine Learning",
+      "description": "Desarrollar y entrenar modelos predictivos supervisados de scoring (ej. XGBoost) que sirvan como el motor principal de evaluación de riesgo crediticio de la estrategia del negocio.",
+      "acceptance": [
+        "Implementar un pipeline robusto en Python utilizando Scikit-learn y XGBoost para el entrenamiento del modelo de riesgo.",
+        "Validar estadísticamente el modelo logrando un coeficiente de Gini >= 0.65 (ROC-AUC >= 0.825) y un estadístico Kolmogorov-Smirnov (KS) >= 45% en test.",
+        "Serializar el modelo de scoring predictivo (ej. joblib o skops) documentando la firma del modelo para su posterior consumo en tiempo real."
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "CR-003",
+      "name": "cutoff_optimization_and_credit_policy",
+      "title": "Optimización de Puntos de Corte y Política de Crédito",
+      "description": "Identificar los puntos de corte (cut-offs) estadísticos óptimos del score para segmentar usuarios con comportamiento similar y programar la lógica del motor de decisiones y políticas de crédito.",
+      "acceptance": [
+        "Desarrollar una simulación en Python que analice curvas de costo-beneficio para determinar los puntos de corte óptimos según el apetito de riesgo.",
+        "Programar el motor de políticas de crédito para asignar límites de crédito dinámicos (ej. 1.5x ingresos si PD < 0.05) y denegar usuarios de alto riesgo.",
+        "Establecer métricas de portafolio simuladas demostrando el balance entre la tasa de aprobación (Approval Rate) y la tasa de morosidad (Bad Rate < 5%)."
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "CR-004",
+      "name": "adhoc_analytics_and_ai_enrichment",
+      "title": "Analíticas Ad-hoc, Explicabilidad y Enriquecimiento con IA",
+      "description": "Realizar análisis analíticos particulares para enriquecer los modelos predictivos (ej. anomalías de zonas horarias/GPS) e integrar herramientas de IA (explicabilidad de features SHAP y agente conversacional de diagnóstico).",
+      "acceptance": [
+        "Desarrollar análisis ad hoc en Jupyter/Python (ej. validaciones estadísticas de transacciones tardías desmitificadas por diferencia horaria UTC-0).",
+        "Implementar explicabilidad del modelo de scoring utilizando valores SHAP para identificar las variables de mayor impacto en las decisiones de crédito.",
+        "Crear un agente conversacional de diagnóstico crediticio RAG (FastAPI WebSockets + Gemini) que consulte el estado de crédito mediante queries SQL seguras de solo lectura."
+      ],
+      "sdd": true,
+      "status": "pending"
+    }
+  ],
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "require_approved_spec_to_implement": true,
+    "valid_status": ["pending", "spec_ready", "in_progress", "done", "blocked"],
+    "sdd_required_when": "feature has \"sdd\": true"
+  }
+}

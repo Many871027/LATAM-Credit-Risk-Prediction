@@ -1,0 +1,26 @@
+# Claude Code internal directory
+.antigravitycli/
+.agents/
+
+# Local environment
+venv/
+__pycache__/
+*.pyc
+
+# Reports and generated outputs
+# Reports/
+
+# Translated assessment files (to keep repo clean)
+LM_WORK_SAMPLE_CANDIDATE_FINAL_OFFICIAL_ES.md
+
+# Python artifacts
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Raw data directory
+DB/
+
+# Middleware binaries
+toolbox.exe
+
+
