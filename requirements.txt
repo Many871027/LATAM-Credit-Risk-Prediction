@@ -3,8 +3,9 @@ uvicorn
 xgboost
 scikit-learn
 mlflow
-google-cloud-bigquery
 pandas
 numpy
 pydantic
 websockets
+duckdb
+prefect

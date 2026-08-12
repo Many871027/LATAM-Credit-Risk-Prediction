@@ -1,55 +1,57 @@
 {
-  "project": "Credit Risk - MERCADO PAGO",
-  "description": "Senior ML/AI Engineer, focused on credit risk modeling and analysis.",
+  "project": "Credit Risk - MERCADO PAGO (DuckDB & Prefect Production Environment)",
+  "description": "ML/AI Engineer, focused on credit risk modeling using DuckDB Medallion architecture and Prefect orchestration.",
   "features": [
     {
       "id": "CR-001",
-      "name": "business_modeling_and_target_construction",
-      "title": "Modelado de Negocio, Features y Definición de Target",
-      "description": "Definir y modelar la problemática de negocio de riesgo crediticio procesando datos transaccionales para generar variables de comportamiento e instrumentar el target del modelo (DPD30).",
+      "name": "medallion_duckdb_prefect_pipeline",
+      "title": "Data Pipeline Medallion con DuckDB y Prefect",
+      "description": "Diseñar e implementar una arquitectura Medallion (Bronze, Silver, Gold) sobre DuckDB, orquestada con flujos y tareas de Prefect para ingerir, limpiar y agregar datos de crédito.",
       "acceptance": [
-        "Desarrollar scripts en Python y queries SQL en BigQuery para procesar variables históricas (ej. volumen mensual, regularidad de sesión).",
-        "Construir la variable objetivo (target_default_30d) que identifique usuarios con impagos superiores a 30 días en una ventana de 12 meses.",
-        "Implementar una lógica de auditoría de datos en SQL para identificar y resolver duplicados de llaves primarias, inconsistencias de tipo de datos y nulos."
+        "Ingestar datos crudos en la capa Bronze (conservando duplicados y nulos).",
+        "Limpiar, normalizar formatos de fecha y deduplicar registros en la capa Silver usando SQL de DuckDB.",
+        "Generar la tabla Gold consolidando variables de comportamiento e indicación de target (DPD30) para el entrenamiento.",
+        "Orquestar el pipeline completo usando tareas (tasks) y flujos (flows) de Prefect, controlando fallos y reintentos."
       ],
       "sdd": true,
-      "status": "spec_ready"
+      "status": "done"
     },
     {
       "id": "CR-002",
-      "name": "ml_scoring_model_development",
-      "title": "Desarrollo del Modelo de Scoring de Machine Learning",
-      "description": "Desarrollar y entrenar modelos predictivos supervisados de scoring (ej. XGBoost) que sirvan como el motor principal de evaluación de riesgo crediticio de la estrategia del negocio.",
+      "name": "xgboost_model_training_pipeline",
+      "title": "Pipeline de Entrenamiento de Modelos con XGBoost",
+      "description": "Desarrollar un flujo de entrenamiento con XGBoost que consuma datos de la capa Gold de DuckDB, optimice hiperparámetros y calcule métricas estadísticas de riesgo.",
       "acceptance": [
-        "Implementar un pipeline robusto en Python utilizando Scikit-learn y XGBoost para el entrenamiento del modelo de riesgo.",
-        "Validar estadísticamente el modelo logrando un coeficiente de Gini >= 0.65 (ROC-AUC >= 0.825) y un estadístico Kolmogorov-Smirnov (KS) >= 45% en test.",
-        "Serializar el modelo de scoring predictivo (ej. joblib o skops) documentando la firma del modelo para su posterior consumo en tiempo real."
+        "Entrenar un clasificador XGBoost utilizando variables de comportamiento e ingresos del usuario.",
+        "Calcular y validar métricas del modelo: Coeficiente de Gini >= 0.65, KS Statistic >= 45%, y ROC-AUC.",
+        "Serializar el modelo entrenado y registrar la firma en formato skops o joblib para su uso en producción."
       ],
       "sdd": true,
       "status": "pending"
     },
     {
       "id": "CR-003",
-      "name": "cutoff_optimization_and_credit_policy",
-      "title": "Optimización de Puntos de Corte y Política de Crédito",
-      "description": "Identificar los puntos de corte (cut-offs) estadísticos óptimos del score para segmentar usuarios con comportamiento similar y programar la lógica del motor de decisiones y políticas de crédito.",
+      "name": "fastapi_inference_service",
+      "title": "Servicio de Inferencia en Tiempo Real con FastAPI",
+      "description": "Crear un servicio web asíncrono con FastAPI para exponer endpoints de inferencia de scoring de riesgo y asignación dinámica de límites de crédito.",
       "acceptance": [
-        "Desarrollar una simulación en Python que analice curvas de costo-beneficio para determinar los puntos de corte óptimos según el apetito de riesgo.",
-        "Programar el motor de políticas de crédito para asignar límites de crédito dinámicos (ej. 1.5x ingresos si PD < 0.05) y denegar usuarios de alto riesgo.",
-        "Establecer métricas de portafolio simuladas demostrando el balance entre la tasa de aprobación (Approval Rate) y la tasa de morosidad (Bad Rate < 5%)."
+        "Implementar un endpoint `/predict` asíncrono que acepte datos de entrada validados mediante esquemas Pydantic.",
+        "Resolver predicciones en menos de 100ms integrando el modelo XGBoost serializado.",
+        "Calcular y retornar la asignación dinámica de límites de crédito con lógica de políticas de riesgo.",
+        "Implementar valores de contingencia por defecto si fallan los datos de entrada o el modelo."
       ],
       "sdd": true,
       "status": "pending"
     },
     {
       "id": "CR-004",
-      "name": "adhoc_analytics_and_ai_enrichment",
-      "title": "Analíticas Ad-hoc, Explicabilidad y Enriquecimiento con IA",
-      "description": "Realizar análisis analíticos particulares para enriquecer los modelos predictivos (ej. anomalías de zonas horarias/GPS) e integrar herramientas de IA (explicabilidad de features SHAP y agente conversacional de diagnóstico).",
+      "name": "drift_monitoring_and_logging",
+      "title": "Monitoreo de Deriva (Drift) y Trazabilidad MLOps",
+      "description": "Implementar un sistema de monitoreo de deriva de predicciones (PSI) y registrar métricas y ejecuciones con MLflow.",
       "acceptance": [
-        "Desarrollar análisis ad hoc en Jupyter/Python (ej. validaciones estadísticas de transacciones tardías desmitificadas por diferencia horaria UTC-0).",
-        "Implementar explicabilidad del modelo de scoring utilizando valores SHAP para identificar las variables de mayor impacto en las decisiones de crédito.",
-        "Crear un agente conversacional de diagnóstico crediticio RAG (FastAPI WebSockets + Gemini) que consulte el estado de crédito mediante queries SQL seguras de solo lectura."
+        "Calcular la métrica de Population Stability Index (PSI) para detectar desvíos entre los datos de entrenamiento y producción.",
+        "Instrumentar registros de telemetría (latencia, predicción media, tasa de errores) persistidos en base de datos o consola.",
+        "Registrar los experimentos y ejecuciones de entrenamiento en una instancia de MLflow local."
       ],
       "sdd": true,
       "status": "pending"
