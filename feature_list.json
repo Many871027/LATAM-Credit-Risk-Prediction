@@ -54,7 +54,7 @@
         "Registrar los experimentos y ejecuciones de entrenamiento en una instancia de MLflow local."
       ],
       "sdd": true,
-      "status": "pending"
+      "status": "done"
     }
   ],
   "rules": {

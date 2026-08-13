@@ -46,4 +46,13 @@
 - Implemented Task 7: Created the unified local verification runner script `src/api/run_service_verification.py`.
 - Documented requirement-to-test traceability in `progress/impl_fastapi_inference_service.md`.
 
+## [2026-08-12] - CR-004 - drift_monitoring_and_logging
+- Completion of all analytical requirements A1–A7.
+- PSI drift metric implementation and mathematical verification.
+- Prediction telemetry logging with NULL/missing-field anomaly handling.
+- LLM safety scorers (ToxicityScorer, PromptInjectionScorer, FidelityScorer) and dialogue logging.
+- Weekly drift pipeline trigger, safety alert thresholds, and MLflow run logging.
+- Reference to `progress/impl_drift_monitoring_and_logging.md`.
+- Final verification result: `Ran 24 tests in 65.277s — OK`.
+
 

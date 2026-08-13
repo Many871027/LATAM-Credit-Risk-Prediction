@@ -2,14 +2,16 @@ import os
 import time
 import logging
 import traceback
+import uuid
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, BackgroundTasks
 import skops.io as sio
 import pandas as pd
 
 from src.api.schemas import InferenceRequest, InferenceResponse
 from src.api.engine import calculate_credit_decision
 from src.api.utils import LatencyTracker
+from src.monitoring.logging_db import initialize_monitoring_db, log_prediction
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -39,6 +41,14 @@ async def lifespan(app: FastAPI):
         logger.error(f"Startup error: Model loading failed. Falling back to default scoring. Details: {e}")
         app.state.model = None
     
+    # Initialize the monitoring DB
+    db_path = os.getenv("DB_PATH", "credit_risk_medallion.db")
+    logger.info(f"Startup: Initializing monitoring DB at: {db_path}")
+    try:
+        initialize_monitoring_db(db_path)
+    except Exception as e:
+        logger.error(f"Startup error: Monitoring DB initialization failed. Details: {e}")
+    
     yield
     # Shutdown: Clean up resources
     app.state.model = None
@@ -64,7 +74,7 @@ def health() -> dict:
     }
 
 @app.post("/predict", response_model=InferenceResponse, status_code=status.HTTP_200_OK)
-async def predict(request: InferenceRequest) -> InferenceResponse:
+async def predict(request: InferenceRequest, background_tasks: BackgroundTasks) -> InferenceResponse:
     """
     POST /predict endpoint.
     Resolves user credit predictions, applies dynamic risk policies, and implements robust fallback paths.
@@ -74,6 +84,7 @@ async def predict(request: InferenceRequest) -> InferenceResponse:
     pd_val = 0.08
     credit_limit = 2000.0
     decision = "FALLBACK_APPROVE"
+    prediction_id = str(uuid.uuid4())
     
     try:
         model = getattr(app.state, "model", None)
@@ -112,6 +123,23 @@ async def predict(request: InferenceRequest) -> InferenceResponse:
         logger.warning(
             f"[SLA WARNING] Request took {latency_ms:.2f}ms to process, which exceeds the sub-100ms SLA."
         )
+        
+    # Queue background task to log prediction to DB
+    db_path = os.getenv("DB_PATH", "credit_risk_medallion.db")
+    background_tasks.add_task(
+        log_prediction,
+        db_path=db_path,
+        prediction_id=prediction_id,
+        user_id=request.user_id,
+        monthly_volume=request.monthly_volume,
+        session_regularity=request.session_regularity,
+        income=request.income,
+        probability_of_default=pd_val,
+        credit_limit=credit_limit,
+        decision=decision,
+        latency_ms=latency_ms,
+        status=status_val
+    )
         
     return InferenceResponse(
         user_id=request.user_id,
