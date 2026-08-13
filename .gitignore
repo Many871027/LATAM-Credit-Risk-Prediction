@@ -23,4 +23,10 @@ DB/
 # Middleware binaries
 toolbox.exe
 
+# Local DuckDB / SQLite monitoring databases generated at runtime
+*.db
+*.db-journal
+*.duckdb
+*.duckdb-wal
+
 
